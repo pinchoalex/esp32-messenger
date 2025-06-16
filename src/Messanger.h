@@ -17,6 +17,9 @@ public:
 
     const uint8_t HEADER_MAGIC[4] = {0x55, 0xAA, 0x55, 0xAA};
 
+    SemaphoreHandle_t readMutex_;
+    SemaphoreHandle_t sendMutex_;
+
 private:
     static void receivePacketTask(void* pvParameters);
     static void sendPacketTask(void* pvParameters);
@@ -24,8 +27,6 @@ private:
     uart_port_t uart_num_;
     DataPacket* packetSend_;
     DataPacket* packetRead_;
-    SemaphoreHandle_t readMutex_;
-    SemaphoreHandle_t sendMutex_;
 };
 
 #endif

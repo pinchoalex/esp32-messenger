@@ -14,6 +14,7 @@ public:
     void begin(int baud_rate, int tx_pin, int rx_pin, DataPacket* send, DataPacket* read);
     void send(const DataPacket& packet);
     bool receive(DataPacket& packet);
+    bool isReceiving() const { return receivingData_; }
 
     const uint8_t HEADER_MAGIC[4] = {0x55, 0xAA, 0x55, 0xAA};
 
@@ -27,6 +28,7 @@ private:
     uart_port_t uart_num_;
     DataPacket* packetSend_;
     DataPacket* packetRead_;
+    bool receivingData_ = false;
 };
 
 #endif

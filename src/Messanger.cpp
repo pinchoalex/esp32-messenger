@@ -58,16 +58,26 @@ bool Messanger::receive(DataPacket& packet) {
 
 void Messanger::receivePacketTask(void* pvParameters) {
     Messanger* msg = reinterpret_cast<Messanger*>(pvParameters);
+    TickType_t lastReceivedTick = xTaskGetTickCount();
+
     while (true) {
         DataPacket temp;
         if (msg->receive(temp)) {
             if (memcmp(temp.header, msg->HEADER_MAGIC, 4) == 0) {
+                msg->receivingData_ = true;
+                lastReceivedTick = xTaskGetTickCount();
+
                 if (xSemaphoreTake(msg->readMutex_, pdMS_TO_TICKS(10)) == pdTRUE) {
                     memcpy(msg->packetRead_, &temp, sizeof(DataPacket));
                     xSemaphoreGive(msg->readMutex_);
                 }
             }
         }
+
+        if (xTaskGetTickCount() - lastReceivedTick > pdMS_TO_TICKS(300)) {
+            msg->receivingData_ = false;
+        }
+
         vTaskDelay(pdMS_TO_TICKS(10));
     }
 }

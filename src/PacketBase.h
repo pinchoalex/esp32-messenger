@@ -10,8 +10,8 @@ struct __attribute__((packed)) DataPacket {
     bool failsafe;
     bool lost_frame;
     uint16_t channels[16];
-    float azimuth;
-    float pitch;
+    int azimuth;
+    int pitch;
 };
 
 #endif
